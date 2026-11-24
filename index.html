@@ -1,0 +1,177 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Başka İstanbul Yok · Üst Halka</title>
+<meta name="description" content="Ataşehir'in üst halkası: üç bloğun çatısından üç uçuş. Watergarden, Finanskent, Maltepe sahili. Yeni taşınan misafir için moda, sanat, elektronik, tarım.">
+<style>
+/* Zemin: dokuma. Harita karosu yok, uydu yok, sokak çizgisi yok. Her renk ayrık bir iplik. */
+:root{
+  --keten:#ece4d6; --ham:#f6f1e8; --kömür:#211d1a; --is:#5d544b;
+  --ip-kina:#b4462a;   /* İP-01 Kına: Watergarden uçuşu */
+  --ip-lacivert:#22406e; /* İP-02 Çivit: Finanskent uçuşu */
+  --ip-zeytin:#5f6b2e; /* İP-03 Zeytin: Maltepe sahil uçuşu */
+  --ip-safran:#d8a033; /* İP-04 Safran: halkalar */
+  --cizgi:#d6cbb8;
+  --serif:"Iowan Old Style","Palatino Linotype",Palatino,Georgia,serif;
+  --sans:system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root{--keten:#1b1815;--ham:#24201c;--kömür:#efe8dc;--is:#b2a796;--cizgi:#3a342d;--ip-kina:#e0714f;--ip-lacivert:#7d9fd6;--ip-zeytin:#a8b55d;--ip-safran:#e8b955;color-scheme:dark}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--keten);color:var(--kömür);font:17px/1.6 var(--serif)}
+.sar{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{padding-block:40px 18px;display:grid;gap:10px}
+.ust{font:600 .74rem var(--sans);letter-spacing:.22em;text-transform:uppercase;color:var(--is)}
+h1{font-weight:400;font-size:clamp(2.6rem,7vw,5.6rem);line-height:.98;margin:0;letter-spacing:-.02em;text-wrap:balance}
+h1 em{font-style:italic;color:var(--ip-kina)}
+.giris{max-width:62ch;margin:0;color:var(--is)}
+.sahne{position:relative;margin-block:18px 10px;border:1px solid var(--cizgi);background:var(--ham)}
+canvas{display:block;width:100%;height:auto;aspect-ratio:16/10}
+.not{font:.78rem var(--sans);color:var(--is);padding:8px 12px;border-top:1px solid var(--cizgi);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.secim{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:12px;margin-block:14px 40px}
+.secim button{all:unset;cursor:pointer;display:grid;grid-template-columns:auto 1fr;gap:4px 14px;align-items:center;padding:16px;border:1px solid var(--cizgi);background:var(--ham)}
+.secim button:focus-visible{outline:3px solid var(--ip-safran);outline-offset:2px}
+.secim button[aria-pressed="true"]{border-color:var(--kömür)}
+.kumas{grid-row:span 2;width:44px;height:44px;background:repeating-linear-gradient(90deg,var(--c) 0 3px,transparent 3px 5px),repeating-linear-gradient(0deg,var(--c) 0 3px,var(--ham) 3px 5px)}
+.secim b{font-weight:600;font-size:1.08rem}.secim small{font:.8rem var(--sans);color:var(--is)}
+h2{font-weight:400;font-size:clamp(1.6rem,3.4vw,2.4rem);margin:0 0 6px;text-wrap:balance}
+.bolum{padding-block:34px;border-top:1px solid var(--cizgi);display:grid;gap:18px}
+.ihtiyac{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:12px}
+.ihtiyac article{background:var(--ham);border:1px solid var(--cizgi);padding:18px;display:grid;gap:8px;align-content:start}
+.ihtiyac h3{margin:0;font-weight:600;font-size:1.05rem}
+.ihtiyac p{margin:0;font-size:.95rem;color:var(--is)}
+.ihtiyac a{font:600 .86rem var(--sans);color:var(--kömür);text-underline-offset:3px}
+.durum{font:600 .7rem var(--sans);letter-spacing:.1em;text-transform:uppercase;justify-self:start;padding:2px 8px;border:1px solid currentColor}
+.palet{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,200px),1fr));gap:10px}
+.palet div{border:1px solid var(--cizgi);background:var(--ham)}
+.palet i{display:block;height:64px;background:repeating-linear-gradient(90deg,var(--c) 0 2px,transparent 2px 3px),var(--c)}
+.palet span{display:block;padding:8px 10px;font:.8rem var(--sans)}
+footer{padding-block:28px 48px;border-top:1px solid var(--cizgi);font:.8rem var(--sans);color:var(--is)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<header class="sar">
+  <div class="ust">Ataşehir'in üst halkası</div>
+  <h1>Başka İstanbul <em>yok.</em></h1>
+  <p class="giris">Binaya yeni taşınan misafir çatıya çıkar. Üç bloğun her birinden ayrı bir yöne uçulur: birinden alışverişe, birinden finansa, birinden sahile ve konsere. Şehir burada bir harita değil, bir dokuma. Her rota tek bir ipliktir; halkalar ilmektir.</p>
+</header>
+
+<main class="sar">
+  <div class="sahne">
+    <canvas id="dokuma" width="1600" height="1000" aria-label="Dokuma zemin üzerinde üç bloktan üç uçuş rotası"></canvas>
+    <div class="not"><span id="anlat">Bir blok seç: çatıdan uçuş başlar.</span><span>Yönler yaklaşık, ölçek yok. Harita verisi kullanılmadı.</span></div>
+  </div>
+
+  <div class="secim" role="group" aria-label="Blok seç">
+    <button type="button" data-r="0" aria-pressed="false"><span class="kumas" style="--c:var(--ip-kina)"></span><b>A Blok → Watergarden</b><small>İP-01 Kına · alışveriş, yemek, akşam yürüyüşü</small></button>
+    <button type="button" data-r="1" aria-pressed="false"><span class="kumas" style="--c:var(--ip-lacivert)"></span><b>B Blok → Finanskent</b><small>İP-02 Çivit · iş, fırsat, ofis</small></button>
+    <button type="button" data-r="2" aria-pressed="false"><span class="kumas" style="--c:var(--ip-zeytin)"></span><b>C Blok → Maltepe sahili</b><small>İP-03 Zeytin · miting ve konser alanı, deniz</small></button>
+  </div>
+
+  <section class="bolum">
+    <h2>Yeni taşınan misafirin ilk haftası</h2>
+    <p class="giris">Dört site tek bir yaşamın dört ihtiyacına karşılık gelir. Aşağıdaki kapılar o sitelere gider. Randevu ve müsaitlik bu sayfada canlı tutulmaz; her kapı kendi sitesinde açılır.</p>
+    <div class="ihtiyac">
+      <article><span class="durum" style="color:var(--ip-kina)">Moda</span><h3>Online terzi müsait mi?</h3><p>Ölçü, prova ve koleksiyon atölyesi. Kumaş seçimi gerçek numuneyle yapılır.</p><a href="https://www.afair.studio/">afair.studio'ya git</a></article>
+      <article><span class="durum" style="color:var(--ip-zeytin)">Tarım</span><h3>Tarım danışmanından randevu</h3><p>Balkon bahçesi, ne ekeyim, mevsim takvimi. Danışman tarım tarafında yanıtlar.</p><a href="https://www.hasat.online/">hasat.online'a git</a></article>
+      <article><span class="durum" style="color:var(--ip-lacivert)">Bina</span><h3>Blok ve misafir karşılama</h3><p>Hangi blok, hangi kapı, ilk gün nereye. Yeni gelen için yönlendirme.</p><a href="https://www.modernatasehir.com/">modernataşehir'e git</a></article>
+      <article><span class="durum" style="color:var(--ip-safran)">Şehir</span><h3>Ataşehir pilotu</h3><p>Mahalleden şehre: mekân, ihtiyaç ve iyileştirme önerileri.</p><a href="https://www.atasehirmodern.com/">ataşehirmodern'e git</a></article>
+    </div>
+  </section>
+
+  <section class="bolum">
+    <h2>İplik paleti</h2>
+    <p class="giris">Renkler ekrandan seçilmedi, iplikten adlandırıldı. Her rota tek renk kalır, karışmaz; tarımdaki tohum ayrımı gibi.</p>
+    <div class="palet">
+      <div><i style="--c:var(--ip-kina)"></i><span>İP-01 Kına · yün · Watergarden</span></div>
+      <div><i style="--c:var(--ip-lacivert)"></i><span>İP-02 Çivit · pamuk · Finanskent</span></div>
+      <div><i style="--c:var(--ip-zeytin)"></i><span>İP-03 Zeytin · keten · Maltepe</span></div>
+      <div><i style="--c:var(--ip-safran)"></i><span>İP-04 Safran · ipek · halkalar</span></div>
+    </div>
+  </section>
+</main>
+
+<footer class="sar">baskaistanbulyok · üst halka · tek dosya, dış bağımlılık yok, harita karosu yok. Terazi (claude-opus-5-5) · 25 Kasım 2026.</footer>
+
+<script>
+(() => {
+  const cv = document.getElementById('dokuma'), g = cv.getContext('2d');
+  const W = cv.width, H = cv.height;
+  const az = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  // Bloklar ve hedefler: yön yaklaşık, ölçek yok.
+  const blok = [{x:740,y:520,ad:'A'},{x:850,y:430,ad:'B'},{x:930,y:560,ad:'C'}];
+  const rota = [
+    {ad:'Watergarden', c:'--ip-kina',     h:{x:330,y:560}, k:{x:560,y:250}},
+    {ad:'Finanskent',  c:'--ip-lacivert', h:{x:520,y:120}, k:{x:980,y:140}},
+    {ad:'Maltepe sahili · miting ve konser alanı', c:'--ip-zeytin', h:{x:1120,y:900}, k:{x:1320,y:520}},
+  ];
+  const anlat = document.getElementById('anlat');
+  let secili = -1, t0 = 0;
+
+  function dokuma() {
+    g.fillStyle = css('--ham'); g.fillRect(0,0,W,H);
+    g.lineWidth = 1;
+    for (let x = 0; x < W; x += 6) { g.strokeStyle = (x/6)%7===0 ? css('--cizgi') : 'rgba(128,112,90,.10)'; g.beginPath(); g.moveTo(x+.5,0); g.lineTo(x+.5,H); g.stroke(); }
+    for (let y = 0; y < H; y += 6) { g.strokeStyle = (y/6)%7===0 ? css('--cizgi') : 'rgba(128,112,90,.08)'; g.beginPath(); g.moveTo(0,y+.5); g.lineTo(W,y+.5); g.stroke(); }
+    // Deniz: atkı ipliği yoğunlaşır (Maltepe yönü güney-doğu).
+    g.strokeStyle = 'rgba(34,64,110,.22)';
+    for (let i = 0; i < 26; i++) { const y = 820 + i*7; g.beginPath(); g.moveTo(900 + i*6, y); g.lineTo(W, y - 90); g.stroke(); }
+  }
+  function bez(p0,k,p1,t){const u=1-t;return {x:u*u*p0.x+2*u*t*k.x+t*t*p1.x, y:u*u*p0.y+2*u*t*k.y+t*t*p1.y};}
+  function bloklar() {
+    blok.forEach((b,i) => {
+      for (let k = 0; k < 9; k++) { g.fillStyle = k%2 ? css('--kömür') : css('--is'); g.fillRect(b.x-14, b.y-k*7, 28, 5); }
+      g.font = '600 22px ' + css('--sans'); g.fillStyle = css('--kömür'); g.fillText(b.ad, b.x+22, b.y-48);
+    });
+  }
+  function hedefler(vurgu) {
+    rota.forEach((r,i) => {
+      g.globalAlpha = vurgu<0 || vurgu===i ? 1 : .35;
+      g.strokeStyle = css(r.c); g.lineWidth = 3;
+      for (let k = 0; k < 4; k++) { g.beginPath(); g.arc(r.h.x, r.h.y, 10 + k*7, 0, Math.PI*2); g.stroke(); }
+      g.font = '400 30px ' + css('--serif'); g.fillStyle = css('--kömür');
+      const yaz = r.ad.split(' · '); g.fillText(yaz[0], r.h.x - 60, r.h.y + 62); if (yaz[1]) { g.font = '16px ' + css('--sans'); g.fillText(yaz[1], r.h.x - 60, r.h.y + 86); }
+      g.globalAlpha = 1;
+    });
+  }
+  function ucus(i, t) {
+    const r = rota[i], b = blok[i], p0 = {x:b.x, y:b.y-64};
+    const renk = css(r.c), son = Math.min(1, t);
+    // İplik: dikiş gibi kesik, ilerledikçe dolar.
+    g.strokeStyle = renk; g.lineWidth = 4; g.setLineDash([14,7]); g.beginPath();
+    for (let s = 0; s <= son; s += 0.01) { const p = bez(p0, r.k, r.h, s); s === 0 ? g.moveTo(p.x,p.y) : g.lineTo(p.x,p.y); }
+    g.stroke(); g.setLineDash([]);
+    // Halkalar: rota üstünde dört ilmek.
+    [0.2,0.42,0.64,0.86].forEach(s => {
+      const p = bez(p0, r.k, r.h, s), q = bez(p0, r.k, r.h, s+0.01), a = Math.atan2(q.y-p.y, q.x-p.x);
+      g.save(); g.translate(p.x,p.y); g.rotate(a); g.strokeStyle = css('--ip-safran'); g.lineWidth = son > s ? 5 : 2;
+      g.beginPath(); g.ellipse(0,0,10,30,0,0,Math.PI*2); g.stroke(); g.restore();
+    });
+    // Uçucu: kanatlı üçgen.
+    const p = bez(p0, r.k, r.h, son), q = bez(p0, r.k, r.h, Math.min(1, son+0.01)), a = Math.atan2(q.y-p.y, q.x-p.x);
+    g.save(); g.translate(p.x,p.y); g.rotate(a); g.fillStyle = css('--kömür');
+    g.beginPath(); g.moveTo(18,0); g.lineTo(-12,-16); g.lineTo(-6,0); g.lineTo(-12,16); g.closePath(); g.fill(); g.restore();
+  }
+  function ciz(now) {
+    dokuma(); hedefler(secili); bloklar();
+    if (secili >= 0) {
+      const t = az ? 1 : (now - t0) / 3200;
+      ucus(secili, t);
+      if (t < 1) requestAnimationFrame(ciz);
+    }
+  }
+  document.querySelectorAll('.secim button').forEach(btn => btn.addEventListener('click', () => {
+    secili = +btn.dataset.r; t0 = performance.now();
+    document.querySelectorAll('.secim button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
+    anlat.textContent = blok[secili].ad + ' Blok çatısından ' + rota[secili].ad + ' yönüne uçuş.';
+    requestAnimationFrame(ciz);
+  }));
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => ciz(performance.now()));
+  ciz(0);
+})();
+</script>
+</body>
+</html>
