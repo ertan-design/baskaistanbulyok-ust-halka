@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>afair · Kumaş</title>
+<meta name="description" content="Rüzgârda gerçek bir kumaş. Sürükle, döndür, rüzgârı sen yönet.">
+<style>
+:root{--zemin:#0b0a09;--yazi:#e9e2d6;--soluk:#8a8276;--ince:#2a2622;--vurgu:#c9a36a;
+--serif:"Didot","Bodoni 72","Bodoni MT","Iowan Old Style",Georgia,serif;--sans:system-ui,-apple-system,"Segoe UI",sans-serif;color-scheme:dark}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:var(--zemin);color:var(--yazi);font:15px/1.5 var(--sans);overflow:hidden;touch-action:none}
+canvas{position:fixed;inset:0;width:100%;height:100%;display:block;cursor:grab}
+canvas.tut{cursor:grabbing}
+.ust{position:fixed;top:0;left:0;right:0;padding:calc(18px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) 0 max(18px,env(safe-area-inset-left,0px));display:flex;justify-content:space-between;align-items:baseline;pointer-events:none}
+.marka{font:400 1.7rem var(--serif);letter-spacing:.32em;text-transform:lowercase}
+.ipucu{font:.78rem var(--sans);color:var(--soluk);letter-spacing:.06em}
+.alt{position:fixed;left:0;right:0;bottom:0;padding:0 max(18px,env(safe-area-inset-right,0px)) calc(18px + env(safe-area-inset-bottom,0px)) max(18px,env(safe-area-inset-left,0px));display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:end}
+.grup{display:flex;gap:6px;flex-wrap:wrap}
+button{font:500 .78rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--yazi);background:rgba(20,18,16,.72);border:1px solid var(--ince);padding:10px 14px;cursor:pointer;backdrop-filter:blur(6px)}
+button[aria-pressed="true"]{border-color:var(--vurgu);color:var(--vurgu)}
+button:focus-visible{outline:2px solid var(--vurgu);outline-offset:2px}
+</style>
+</head>
+<body>
+<canvas id="c" aria-label="Rüzgârda dalgalanan kumaş. Sürükleyerek döndür."></canvas>
+<div class="ust"><div class="marka">afair</div><div class="ipucu" id="ipucu">sürükle · döndür</div></div>
+<div class="alt">
+  <div class="grup" role="group" aria-label="Kumaş">
+    <button type="button" data-k="ipek" aria-pressed="true">İpek</button>
+    <button type="button" data-k="kadife" aria-pressed="false">Kadife</button>
+    <button type="button" data-k="keten" aria-pressed="false">Keten</button>
+  </div>
+  <div class="grup" role="group" aria-label="Elin ne yapsın">
+    <button type="button" data-m="dondur" aria-pressed="true">Döndür</button>
+    <button type="button" data-m="ruzgar" aria-pressed="false">Rüzgâr</button>
+    <button type="button" id="tut">Tut</button>
+  </div>
+</div>
+<script>
+(() => {
+'use strict';
+const cv = document.getElementById('c'), g = cv.getContext('2d');
+const az = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let W = 0, H = 0, D = 1;
+function boyut(){ D = Math.min(2, devicePixelRatio || 1); W = innerWidth; H = innerHeight; cv.width = W*D; cv.height = H*D; g.setTransform(D,0,0,D,0,0); }
+addEventListener('resize', boyut); boyut();
+
+// Kumaşlar: renk, parlaklık, ağırlık, sertlik.
+const KUMAS = {
+  ipek:   {r:214,g:190,b:156, parlak:.7, ust:60, kutle:.55, sert:.30, dokuma:.015},
+  kadife: {r:92, g:22, b:30,  parlak:.22, ust:6,  kutle:1.4, sert:.18, dokuma:.06, kenar:.55},
+  keten:  {r:186,g:174,b:150, parlak:.12, ust:4,  kutle:1.0, sert:.55, dokuma:.12}
+};
+let k = KUMAS.ipek;
+
+// Verlet ağı.
+const NX = 44, NY = 27, ARA = 0.04;
+let P = [], C = [];
+function kur(){
+  P = []; C = [];
+  for (let j=0;j<NY;j++) for (let i=0;i<NX;i++){
+    const x = (i-(NX-1)/2)*ARA, y = 0.62 - j*ARA*0.98, z = 0;
+    P.push({x,y,z,px:x,py:y,pz:z,sabit: j===0 && (i===0 || i===NX-1 || i===Math.floor(NX/2))});
+  }
+  const id=(i,j)=>j*NX+i, bag=(a,b,s)=>C.push([a,b,Math.hypot(P[a].x-P[b].x,P[a].y-P[b].y,P[a].z-P[b].z),s]);
+  for (let j=0;j<NY;j++) for (let i=0;i<NX;i++){
+    if (i<NX-1) bag(id(i,j),id(i+1,j),1);
+    if (j<NY-1) bag(id(i,j),id(i,j+1),1);
+    if (i<NX-1&&j<NY-1){ bag(id(i,j),id(i+1,j+1),.5); bag(id(i+1,j),id(i,j+1),.5); }
+    if (i<NX-2) bag(id(i,j),id(i+2,j),k.sert);
+    if (j<NY-2) bag(id(i,j),id(i,j+2),k.sert);
+  }
+}
+kur();
+
+// Rüzgâr: yönü sen verirsin; esinti kendiliğinden nefes alır.
+let ruzgar = {x:0.0, z:-1.0, guc:1.0}, zaman = 0;
+let yaw = -0.5, pitch = 0.12, dyaw = az ? 0 : 0.0016, mod = 'dondur', tutulan = -1;
+
+function adim(dt){
+  zaman += dt;
+  const nefes = 0.55 + 0.45*Math.sin(zaman*0.7) + 0.25*Math.sin(zaman*1.9+1.3);
+  const yer = -1.15;
+  // Üçgen başına rüzgâr: kuvvet yüzey normaliyle orantılı (gerçek bayrak/perde fiziği).
+  const F = P.map(()=>[0,-9.8*0.016*k.kutle,0]);
+  for (let j=0;j<NY-1;j++) for (let i=0;i<NX-1;i++){
+    const a=j*NX+i,b=a+1,c=a+NX;
+    for (const [p,q,r] of [[a,b,c],[b,c+1,c]]){
+      const A=P[p],B=P[q],R=P[r];
+      const ux=B.x-A.x,uy=B.y-A.y,uz=B.z-A.z, vx=R.x-A.x,vy=R.y-A.y,vz=R.z-A.z;
+      let nx=uy*vz-uz*vy, ny=uz*vx-ux*vz, nz=ux*vy-uy*vx; const l=Math.hypot(nx,ny,nz)||1; nx/=l;ny/=l;nz/=l;
+      const tur = 0.6+0.4*Math.sin(i*0.35+zaman*2.3)*Math.cos(j*0.3-zaman*1.7);
+      const w = (nx*ruzgar.x + nz*ruzgar.z) * ruzgar.guc * nefes * tur * 0.010 / k.kutle;
+      for (const t of [p,q,r]){ F[t][0]+=nx*w; F[t][1]+=ny*w*0.4; F[t][2]+=nz*w; }
+    }
+  }
+  const surt = 0.985;
+  P.forEach((p,n)=>{
+    if (p.sabit || n===tutulan) return;
+    const vx=(p.x-p.px)*surt, vy=(p.y-p.py)*surt, vz=(p.z-p.pz)*surt;
+    p.px=p.x; p.py=p.y; p.pz=p.z;
+    p.x+=vx+F[n][0]*dt; p.y+=vy+F[n][1]*dt; p.z+=vz+F[n][2]*dt;
+    if (p.y<yer){ p.y=yer; }
+  });
+  for (let it=0; it<16; it++) for (const [a,b,L,s] of C){
+    const A=P[a],B=P[b]; const dx=B.x-A.x,dy=B.y-A.y,dz=B.z-A.z, d=Math.hypot(dx,dy,dz)||1e-6, f=(d-L)/d*0.5*s;
+    const fa = (A.sabit||a===tutulan)?0:1, fb=(B.sabit||b===tutulan)?0:1, top=fa+fb; if(!top) continue;
+    A.x+=dx*f*fa*2/top; A.y+=dy*f*fa*2/top; A.z+=dz*f*fa*2/top;
+    B.x-=dx*f*fb*2/top; B.y-=dy*f*fb*2/top; B.z-=dz*f*fb*2/top;
+  }
+}
+
+// Kamera ve ışık (loş, tek anahtar ışık sol üstten).
+function goz(p){
+  const cy=Math.cos(yaw), sy=Math.sin(yaw), cp=Math.cos(pitch), sp=Math.sin(pitch);
+  let x=p.x*cy - p.z*sy, z=p.x*sy + p.z*cy, y=p.y;
+  const y2=y*cp - z*sp, z2=y*sp + z*cp; z=z2+2.6;
+  const s = Math.min(W,H)*0.95/z;
+  return [W/2 + x*s, H*0.47 - y2*s, z];
+}
+const ISIK = (()=>{const v=[-0.55,0.7,-0.65],l=Math.hypot(...v);return v.map(x=>x/l)})();
+
+function ciz(){
+  // Zemin: loş, merkezde hafif ışık havuzu.
+  const grd = g.createRadialGradient(W/2,H*0.55,10,W/2,H*0.55,Math.max(W,H)*0.7);
+  grd.addColorStop(0,'#1d1916'); grd.addColorStop(1,'#070605');
+  g.fillStyle = grd; g.fillRect(0,0,W,H);
+
+  // Gölge: kumaşı yere düşür, bulanıklaştır.
+  const yer = -1.15;
+  g.save(); g.filter = 'blur(18px)'; g.fillStyle = 'rgba(0,0,0,.55)'; g.beginPath();
+  for (let j=0;j<NY-1;j+=2) for (let i=0;i<NX-1;i+=2){
+    const a=P[j*NX+i]; const o=goz({x:a.x+0.35*(a.y-yer), y:yer, z:a.z+0.2*(a.y-yer)});
+    g.moveTo(o[0]+14,o[1]); g.arc(o[0],o[1],14,0,6.283);
+  }
+  g.fill(); g.restore();
+
+  // Üçgenler: derinliğe göre sırala, Lambert + parlama ile boya.
+  const E = P.map(goz), T = [];
+  for (let j=0;j<NY-1;j++) for (let i=0;i<NX-1;i++){
+    const a=j*NX+i,b=a+1,c=a+NX,d=c+1;
+    T.push([a,b,c,i,j],[b,d,c,i,j]);
+  }
+  T.forEach(t=>t.z=(E[t[0]][2]+E[t[1]][2]+E[t[2]][2]));
+  T.sort((u,v)=>v.z-u.z);
+  const cy=Math.cos(yaw), sy=Math.sin(yaw);
+  for (const t of T){
+    const A=P[t[0]],B=P[t[1]],R=P[t[2]];
+    const ux=B.x-A.x,uy=B.y-A.y,uz=B.z-A.z, vx=R.x-A.x,vy=R.y-A.y,vz=R.z-A.z;
+    let nx=uy*vz-uz*vy, ny=uz*vx-ux*vz, nz=ux*vy-uy*vx; const l=Math.hypot(nx,ny,nz)||1; nx/=l;ny/=l;nz/=l;
+    // Kameraya bakan yüz.
+    const bak = -(nx*sy + nz*cy); if (bak<0){ nx=-nx; ny=-ny; nz=-nz; }
+    const dif = Math.max(0, nx*ISIK[0]+ny*ISIK[1]+nz*ISIK[2]);
+    const hx=ISIK[0]-sy, hy=ISIK[1], hz=ISIK[2]-cy, hl=Math.hypot(hx,hy,hz)||1;
+    const spe = Math.pow(Math.max(0,(nx*hx+ny*hy+nz*hz)/hl), k.ust) * k.parlak;
+    const kenar = k.kenar ? Math.pow(1-Math.abs(bak),2)*k.kenar : 0; // kadife: kıyıda parlar
+    const dok = ((t[3]+t[4])%2 ? 1 : 1-k.dokuma);
+    const ort = 0.10, isik = (ort + Math.pow(dif,1.4)*0.72) * dok;
+    const r = Math.min(255, k.r*isik + 255*spe + k.r*kenar), gg = Math.min(255, k.g*isik + 245*spe + k.g*kenar), bb = Math.min(255, k.b*isik + 230*spe + k.b*kenar);
+    g.fillStyle = `rgb(${r|0},${gg|0},${bb|0})`; g.strokeStyle = g.fillStyle; g.lineWidth = 0.6;
+    g.beginPath(); g.moveTo(E[t[0]][0],E[t[0]][1]); g.lineTo(E[t[1]][0],E[t[1]][1]); g.lineTo(E[t[2]][0],E[t[2]][1]); g.closePath(); g.fill(); g.stroke();
+  }
+  // Askı ipleri: görünmez denecek kadar ince (sürreal: kumaş boşlukta asılı).
+  g.strokeStyle='rgba(201,163,106,.18)'; g.lineWidth=1;
+  P.filter(p=>p.sabit).forEach(p=>{const o=goz(p); g.beginPath(); g.moveTo(o[0],0); g.lineTo(o[0],o[1]); g.stroke();});
+}
+
+let son = performance.now();
+function dongu(now){
+  const dt = Math.min(0.033,(now-son)/1000); son = now;
+  if (!az) for (let s=0;s<2;s++) adim(dt*30/2);
+  if (sur===null) yaw += dyaw;
+  ciz(); requestAnimationFrame(dongu);
+}
+if (az){ for (let s=0;s<240;s++) adim(0.5); }
+requestAnimationFrame(dongu);
+
+// Elle yönetim: döndür, rüzgârı ver, kumaşı tut ve çek.
+let sur = null; const ipucu = document.getElementById('ipucu');
+cv.addEventListener('pointerdown', e=>{
+  cv.setPointerCapture(e.pointerId); cv.classList.add('tut');
+  sur = {x:e.clientX, y:e.clientY, yaw, pitch};
+  if (mod==='tut'){
+    let en=1e9; P.forEach((p,n)=>{const o=goz(p),d=Math.hypot(o[0]-e.clientX,o[1]-e.clientY); if(d<en){en=d;tutulan=n;}});
+    if (en>60) tutulan=-1;
+  }
+});
+cv.addEventListener('pointermove', e=>{
+  if (!sur) return;
+  const dx=e.clientX-sur.x, dy=e.clientY-sur.y;
+  if (mod==='dondur'){ yaw = sur.yaw + dx*0.008; pitch = Math.max(-0.6,Math.min(0.9,sur.pitch + dy*0.005)); }
+  else if (mod==='ruzgar'){ const a = Math.atan2(dy,dx); const guc = Math.min(3, Math.hypot(dx,dy)/80);
+    ruzgar = {x:Math.cos(a+yaw), z:Math.sin(a+yaw), guc: 0.3+guc}; ipucu.textContent = 'rüzgâr ' + Math.round(ruzgar.guc*10)/10; }
+  else if (tutulan>=0){ const p=P[tutulan], s=Math.min(W,H)*0.95/2.6, cy=Math.cos(yaw), sy=Math.sin(yaw);
+    const ex=(e.clientX-W/2)/s, ey=-(e.clientY-H*0.47)/s; p.x=p.px=ex*cy; p.z=p.pz=-ex*sy; p.y=p.py=ey; }
+});
+const birak = ()=>{ sur=null; tutulan=-1; cv.classList.remove('tut'); };
+cv.addEventListener('pointerup', birak); cv.addEventListener('pointercancel', birak);
+
+document.querySelectorAll('[data-k]').forEach(b=>b.addEventListener('click',()=>{
+  k = KUMAS[b.dataset.k]; kur();
+  document.querySelectorAll('[data-k]').forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+}));
+const modlar = [...document.querySelectorAll('[data-m]'), document.getElementById('tut')];
+modlar.forEach(b=>b.addEventListener('click',()=>{
+  mod = b.dataset.m || 'tut'; dyaw = 0;
+  modlar.forEach(x=>x.setAttribute('aria-pressed',String(x===b)));
+  ipucu.textContent = mod==='dondur' ? 'sürükle · döndür' : mod==='ruzgar' ? 'sürükle · rüzgârı ver' : 'kumaşa dokun · çek';
+}));
+document.getElementById('tut').setAttribute('aria-pressed','false');
+})();
+</script>
+</body>
+</html>

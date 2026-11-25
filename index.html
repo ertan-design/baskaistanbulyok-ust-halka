@@ -55,13 +55,13 @@ footer{padding-block:28px 48px;border-top:1px solid var(--cizgi);font:.8rem var(
 <header class="sar">
   <div class="ust">Ataşehir'in üst halkası</div>
   <h1>Başka İstanbul <em>yok.</em></h1>
-  <p class="giris">Binaya yeni taşınan misafir çatıya çıkar. Üç bloğun her birinden ayrı bir yöne uçulur: birinden alışverişe, birinden finansa, birinden sahile ve konsere. Şehir burada bir harita değil, bir dokuma. Her rota tek bir ipliktir; halkalar ilmektir.</p>
+  <p class="giris">Çatıya çık. Bir blok seç. Uç.</p>
 </header>
 
 <main class="sar">
   <div class="sahne">
     <canvas id="dokuma" width="1600" height="1000" aria-label="Dokuma zemin üzerinde üç bloktan üç uçuş rotası"></canvas>
-    <div class="not"><span id="anlat">Bir blok seç: çatıdan uçuş başlar.</span><span>Yönler yaklaşık, ölçek yok. Harita verisi kullanılmadı.</span></div>
+    <div class="not"><span id="anlat">Bir blok seç, sonra parmağınla rotayı bük.</span><span>Yönler yaklaşık · harita yok</span></div>
   </div>
 
   <div class="secim" role="group" aria-label="Blok seç">
@@ -72,7 +72,7 @@ footer{padding-block:28px 48px;border-top:1px solid var(--cizgi);font:.8rem var(
 
   <section class="bolum">
     <h2>Yeni taşınan misafirin ilk haftası</h2>
-    <p class="giris">Dört site tek bir yaşamın dört ihtiyacına karşılık gelir. Aşağıdaki kapılar o sitelere gider. Randevu ve müsaitlik bu sayfada canlı tutulmaz; her kapı kendi sitesinde açılır.</p>
+    <p class="giris">Dört kapı, dört ihtiyaç.</p>
     <div class="ihtiyac">
       <article><span class="durum" style="color:var(--ip-kina)">Moda</span><h3>Online terzi müsait mi?</h3><p>Ölçü, prova ve koleksiyon atölyesi. Kumaş seçimi gerçek numuneyle yapılır.</p><a href="https://www.afair.studio/">afair.studio'ya git</a></article>
       <article><span class="durum" style="color:var(--ip-zeytin)">Tarım</span><h3>Tarım danışmanından randevu</h3><p>Balkon bahçesi, ne ekeyim, mevsim takvimi. Danışman tarım tarafında yanıtlar.</p><a href="https://www.hasat.online/">hasat.online'a git</a></article>
@@ -83,7 +83,7 @@ footer{padding-block:28px 48px;border-top:1px solid var(--cizgi);font:.8rem var(
 
   <section class="bolum">
     <h2>İplik paleti</h2>
-    <p class="giris">Renkler ekrandan seçilmedi, iplikten adlandırıldı. Her rota tek renk kalır, karışmaz; tarımdaki tohum ayrımı gibi.</p>
+    <p class="giris">Her rota tek iplik. Renkler karışmaz. <a href="kumas/">Kumaşı elinle çevir →</a></p>
     <div class="palet">
       <div><i style="--c:var(--ip-kina)"></i><span>İP-01 Kına · yün · Watergarden</span></div>
       <div><i style="--c:var(--ip-lacivert)"></i><span>İP-02 Çivit · pamuk · Finanskent</span></div>
@@ -166,9 +166,16 @@ footer{padding-block:28px 48px;border-top:1px solid var(--cizgi);font:.8rem var(
   document.querySelectorAll('.secim button').forEach(btn => btn.addEventListener('click', () => {
     secili = +btn.dataset.r; t0 = performance.now();
     document.querySelectorAll('.secim button').forEach(b => b.setAttribute('aria-pressed', String(b === btn)));
-    anlat.textContent = blok[secili].ad + ' Blok çatısından ' + rota[secili].ad + ' yönüne uçuş.';
+    anlat.textContent = blok[secili].ad + ' Blok → ' + rota[secili].ad.split(' · ')[0] + ' · rotayı parmağınla bük';
     requestAnimationFrame(ciz);
   }));
+  // Yönlendirme: seçili uçuşta parmak/fare rotanın büküm noktasını taşır.
+  function nokta(e){ const r = cv.getBoundingClientRect(); return {x:(e.clientX-r.left)*W/r.width, y:(e.clientY-r.top)*H/r.height}; }
+  let suruk = false;
+  cv.style.touchAction = 'none';
+  cv.addEventListener('pointerdown', e => { if (secili < 0) return; suruk = true; cv.setPointerCapture(e.pointerId); rota[secili].k = nokta(e); t0 = performance.now() - 3200; ciz(performance.now()); });
+  cv.addEventListener('pointermove', e => { if (!suruk) return; rota[secili].k = nokta(e); ciz(performance.now()); });
+  cv.addEventListener('pointerup', () => { suruk = false; });
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => ciz(performance.now()));
   ciz(0);
 })();
