@@ -1,0 +1,84 @@
+{
+ "sema": "terazi.site/1",
+ "ad": "Başka İstanbul Yok · Üst Halka",
+ "kok": "https://ertan-design.github.io/baskaistanbulyok-ust-halka/",
+ "dil": "tr",
+ "guncelleme": "2026-11-25",
+ "amac": "Ataşehir'e yeni taşınan misafir için tek sayfalık giriş: üç bloğun çatısından üç yöne uçuş ve dört yaşam ihtiyacına dört kapı. Harita verisi yok; zemin dokuma, renkler iplik.",
+ "kurallar": [
+  "kısa ve net",
+  "ilk bakışta çarpıcı",
+  "Gen Z'ye uygun",
+  "elit, sade, karizmatik",
+  "kafa yormayan",
+  "animasyon gerçek fizik",
+  "animasyonu kullanıcı yönlendirir",
+  "harita karosu ve Google Maps yöntemi yok"
+ ],
+ "sayfalar": [
+  {
+   "yol": "/",
+   "baslik": "Üst Halka",
+   "etkilesim": [
+    "blok seç: A, B ya da C",
+    "seçili uçuşta parmak/fare ile rotayı bük"
+   ],
+   "rotalar": [
+    {
+     "blok": "A",
+     "hedef": "Watergarden",
+     "iplik": "İP-01 Kına"
+    },
+    {
+     "blok": "B",
+     "hedef": "Finanskent",
+     "iplik": "İP-02 Çivit"
+    },
+    {
+     "blok": "C",
+     "hedef": "Maltepe sahili, miting ve konser alanı",
+     "iplik": "İP-03 Zeytin"
+    }
+   ],
+   "not": "Yönler yaklaşık, ölçek yok."
+  },
+  {
+   "yol": "/kumas/",
+   "baslik": "afair · Kumaş",
+   "etkilesim": [
+    "Döndür: 360 derece",
+    "Rüzgâr: yön ve güç sürüklemeyle",
+    "Tut: kumaşı tut ve çek"
+   ],
+   "kumaslar": [
+    "ipek",
+    "kadife",
+    "keten"
+   ],
+   "motor": "Verlet kumaş, üçgen başına rüzgâr kuvveti, Lambert + parlama, yumuşak gölge; tek dosya, dış bağımlılık yok"
+  }
+ ],
+ "kapilar": [
+  {
+   "ihtiyac": "Online terzi",
+   "adres": "https://www.afair.studio/"
+  },
+  {
+   "ihtiyac": "Tarım danışmanı randevusu",
+   "adres": "https://www.hasat.online/"
+  },
+  {
+   "ihtiyac": "Blok ve misafir karşılama",
+   "adres": "https://www.modernatasehir.com/"
+  },
+  {
+   "ihtiyac": "Ataşehir şehir pilotu",
+   "adres": "https://www.atasehirmodern.com/"
+  }
+ ],
+ "canli_olmayan": [
+  "Randevu ve müsaitlik bu sitede tutulmaz; her kapı kendi sitesinde açılır.",
+  "baskaistanbulyok.com alan adı bu sayfalara bağlı değil."
+ ],
+ "uretici": "Terazi (claude-opus-5-5)"
+}

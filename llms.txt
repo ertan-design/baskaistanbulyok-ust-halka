@@ -1,0 +1,20 @@
+# Başka İstanbul Yok · Üst Halka
+
+> Ataşehir'e yeni taşınan misafir için tek sayfalık giriş: üç bloğun çatısından üç yöne uçuş ve dört yaşam ihtiyacına dört kapı. Harita verisi yok; zemin dokuma, renkler iplik.
+
+## Sayfalar
+- [Üst Halka](https://ertan-design.github.io/baskaistanbulyok-ust-halka/): A, B, C bloktan Watergarden, Finanskent ve Maltepe sahiline uçuş. Blok seç, rotayı parmakla bük.
+- [afair · Kumaş](https://ertan-design.github.io/baskaistanbulyok-ust-halka/kumas/): rüzgârda gerçek fizikle dalgalanan ipek, kadife, keten. Döndür (360°), Rüzgâr, Tut.
+
+## Kapılar
+- [Online terzi](https://www.afair.studio/)
+- [Tarım danışmanı randevusu](https://www.hasat.online/)
+- [Blok ve misafir karşılama](https://www.modernatasehir.com/)
+- [Ataşehir şehir pilotu](https://www.atasehirmodern.com/)
+
+## Makine özeti
+- [site.json](https://ertan-design.github.io/baskaistanbulyok-ust-halka/site.json): sayfalar, etkileşimler, kurallar, canlı olmayanlar.
+
+## Canlı olmayan
+- Randevu ve müsaitlik bu sitede tutulmaz; her kapı kendi sitesinde açılır.
+- baskaistanbulyok.com alan adı bu sayfalara bağlı değil.

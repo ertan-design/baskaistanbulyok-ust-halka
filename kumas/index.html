@@ -20,10 +20,21 @@ canvas.tut{cursor:grabbing}
 button{font:500 .78rem var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--yazi);background:rgba(20,18,16,.72);border:1px solid var(--ince);padding:10px 14px;cursor:pointer;backdrop-filter:blur(6px)}
 button[aria-pressed="true"]{border-color:var(--vurgu);color:var(--vurgu)}
 button:focus-visible{outline:2px solid var(--vurgu);outline-offset:2px}
+.gizli{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
 </style>
 </head>
 <body>
 <canvas id="c" aria-label="Rüzgârda dalgalanan kumaş. Sürükleyerek döndür."></canvas>
+<main class="gizli">
+<h1>afair · Kumaş</h1>
+<p>Loş ışıkta, boşlukta asılı bir kumaş. Rüzgârda gerçek fizikle dalgalanır ve gölgesi yere düşer.</p>
+<h2>Kumaşlar</h2>
+<ul><li>İpek: hafif, akışkan, yüksek parlama.</li><li>Kadife: ağır, bordo, kenarda parlar.</li><li>Keten: sert, mat, dokuma izi belirgin.</li></ul>
+<h2>Elin ne yapar</h2>
+<ul><li>Döndür: sürükle, kumaşı 360 derece çevir.</li><li>Rüzgâr: sürükleme yönü rüzgârın yönü, uzunluğu gücü.</li><li>Tut: kumaşa dokun, tut ve çek.</li></ul>
+<p>Ana sayfa: <a href="../">Başka İstanbul Yok · Üst Halka</a>. Makine özeti: <a href="../site.json">site.json</a>, <a href="../llms.txt">llms.txt</a>.</p>
+</main>
+<noscript><p style="position:fixed;inset:auto 0 50% 0;text-align:center;color:#8a8276">Kumaş için JavaScript gerekir.</p></noscript>
 <div class="ust"><div class="marka">afair</div><div class="ipucu" id="ipucu">sürükle · döndür</div></div>
 <div class="alt">
   <div class="grup" role="group" aria-label="Kumaş">
