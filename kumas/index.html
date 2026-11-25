@@ -75,7 +75,7 @@ function kur(){
 kur();
 
 // Rüzgâr: yönü sen verirsin; esinti kendiliğinden nefes alır.
-let ruzgar = {x:0.0, z:-1.0, guc:1.0}, zaman = 0;
+let ruzgar = {x:0.0, z:-1.0, guc: az ? 0.45 : 1.0}, zaman = 0;
 let yaw = -0.5, pitch = 0.12, dyaw = az ? 0 : 0.0016, mod = 'dondur', tutulan = -1;
 
 function adim(dt){
@@ -169,11 +169,11 @@ function ciz(){
 let son = performance.now();
 function dongu(now){
   const dt = Math.min(0.033,(now-son)/1000); son = now;
-  if (!az) for (let s=0;s<2;s++) adim(dt*30/2);
+  for (let s=0;s<2;s++) adim(dt*30/2); // hareketi azalt açıkken de kumaş salınır; yalnız kendiliğinden dönme kapanır
   if (sur===null) yaw += dyaw;
   ciz(); requestAnimationFrame(dongu);
 }
-if (az){ for (let s=0;s<240;s++) adim(0.5); }
+for (let s=0;s<120;s++) adim(0.5); // ilk karede kumaş zaten asılı
 requestAnimationFrame(dongu);
 
 // Elle yönetim: döndür, rüzgârı ver, kumaşı tut ve çek.
